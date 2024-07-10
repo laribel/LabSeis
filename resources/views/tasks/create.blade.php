@@ -47,6 +47,19 @@
             <p>{{ $message }}</p>
         @enderror
     </div>
+
+    <div>
+        <label class="form-label" for="etiqueta">Etiqueta</label>
+        <select name="etiqueta[]" id="etiqueta" class="form-control" multiple>
+            @foreach($etiqueta as $etiquetas)
+                <option value="{{ $etiquetas->id }}">{{ $etiquetas->nombre }}</option>
+            @endforeach
+            
+        </select>
+      
+    </div>
+
+  
     <div>
         <label class="form-label" for="description">Descripción</label>
         <textarea class="form-control" name="description" id="description" cols="30" rows="10"></textarea>
@@ -56,6 +69,6 @@
     </div>
     <button type="submit" class="btn btn-primary">Crear tarea</button>
 
-
+    
 </form>
 @endsection

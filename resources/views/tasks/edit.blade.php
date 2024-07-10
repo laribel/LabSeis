@@ -21,6 +21,18 @@
             <p>{{ $message }}</p>
         @enderror
     </div>
+
+    <div>
+        <label class="form-label" for="etiqueta">Etiqueta</label>
+        <select class="form-select" name="etiqueta[]" id="etiqueta" required multiple>
+            @foreach ($etiqueta as $tags)
+                <option value="{{ $tags->id }}" {{ $task->idTarea == $tags->id ? 'selected' : '' }}>
+                    {{ $tags->name }}
+                </option>
+            @endforeach
+        </select>
+       
+    </div>
     <div>
         <label class="form-label" for="description">Descripción</label>
         <textarea class="form-control" name="description" id="description" cols="30" rows="10">{{ $task->description }}</textarea>

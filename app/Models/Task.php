@@ -9,7 +9,14 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    
+    protected $fillable=[
+        'name',
+        'description',
+        'priority',
+        'completed',
+        'user_id'
+    ];
 
     public function priority()
     {
@@ -19,5 +26,10 @@ class Task extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function etiqueta()
+    {
+        return $this->belongsToMany(Etiqueta::class,'task_etiqueta');
     }
 }

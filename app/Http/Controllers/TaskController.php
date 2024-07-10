@@ -5,18 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Priority;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\Etiqueta;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     public function index()
     {
-
+        
         $tasks = Task::all();
         $user = User::all();
         return view('tasks.index',[
             'tasks' => $tasks,
-            'user'=> $user
+            'user'=> $user,
+          
         ]);
 
 
@@ -28,7 +30,8 @@ class TaskController extends Controller
         return view('tasks.create', [
             
             'priorities' => Priority::all(),
-            'user' => User::all()
+            'user' => User::all(),
+            'etiqueta' => Etiqueta::all()
           
         ]);
     }
@@ -41,7 +44,7 @@ class TaskController extends Controller
         ]);
     }
 
-    public function store()
+    public function store( Request $request)
     {
 
         // $task = new Task();
@@ -50,24 +53,35 @@ class TaskController extends Controller
         // $task->description = request('description');
 
         // $task->save();
-        $data = request()->validate([
+            $request->validate([
             'name' => ['required', 'min:3', 'max:255'],
             'description' => ['required', 'min:3'],
             'priority_id' => 'required|exists:priorities,id',
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
+            'etiqueta' => 'array',
+            'etiqueta' => 'array|exists:etiqueta,id'
 
         ]);
 
-        Task::create($data);
+            $task =Task::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'priority' => $request->priority,
+                'completed' => false,
+                'user_id' => $request->user_id,
+            ]);
+       
+        $task->etiqueta()->attach($data['etiqueta']);
 
         return redirect('/tasks');
     }
 
     public function edit(Task $task)
     {
-
+        $etiqueta = Etiqueta::all();
         return view('tasks.edit', [
-            'task' => $task
+            'task' => $task,
+            'etiqueta' => $etiqueta
         ]);
     }
 
@@ -76,12 +90,13 @@ class TaskController extends Controller
 
         $data = request()->validate([
             'name' => ['required', 'min:3', 'max:255'],
-            'description' => ['required', 'min:3']
+            'description' => ['required', 'min:3'],
+            'etiqueta' => 'array|exists:etiqueta,id'
         ]);
 
        $task->fill($data)->save();
        //$task->update($data);
-
+      $task->etiqueta()->sync($data['etiqueta']);
         return redirect('/tasks/' . $task->id);
     }
 
